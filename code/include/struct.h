@@ -87,7 +87,7 @@ typedef struct {
     bool big_boss;
     bool inconnu;
     bool save;
-} Map;
+} Map_section;
 
 typedef struct {
     Arme arme;
@@ -95,3 +95,8 @@ typedef struct {
     Consommable consommable;
     int nb_consommable;
 } Inventaire;
+
+typedef struct {
+    Map_section map_section;
+    int nb_map_section;
+} Map;
