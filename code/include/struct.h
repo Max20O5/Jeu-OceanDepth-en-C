@@ -82,6 +82,7 @@ typedef struct {
     int x;
     int y;
     int nb_ennemis;
+    int *tab_ennemis;
     bool tresor;
     bool boss;
     bool big_boss;
@@ -89,14 +90,4 @@ typedef struct {
     bool save;
 } Map_section;
 
-typedef struct {
-    Arme arme;
-    Equipement equipement;
-    Consommable consommable;
-    int nb_consommable;
-} Inventaire;
 
-typedef struct {
-    Map_section map_section;
-    int nb_map_section;
-} Map;
