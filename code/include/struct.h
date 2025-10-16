@@ -1,3 +1,6 @@
+#ifndef STRUCT_H
+#define STRUCT_H
+
 #include "include.h"
 
 typedef struct {
@@ -90,4 +93,4 @@ typedef struct {
     bool save;
 } Map_section;
 
-
+#endif
