@@ -24,6 +24,7 @@ typedef struct {
     int niveau_oxygene_max;
     int niveau_fatigue; // 0 à 5
     int perles;// monnaie du jeu
+    char name[50];;
 } Plongeur;
 
 typedef struct {

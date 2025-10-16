@@ -12,10 +12,13 @@ int main() {
         int choice = print_menu();
 
         switch (choice) {
-            case 1:
+            case 0:
                 start_game();
                 break;
-            case 0:
+            case 1:
+                load_game();
+                break;
+            case 2:
                 running = false;
                 break;
         }

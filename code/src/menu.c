@@ -19,16 +19,18 @@ int print_menu(void) {
     printf("\n");
     printf("==================================================\n\n");
     printf("        Entrez Dans les PROFONDEURS !\n\n");
-    printf("    [ 1 ] - Commencer une nouvelle plongée\n");
-    printf("    [ 0 ] - Quitter le jeu\n\n");
+    printf("    [ 0 ] - Nouvelle partie\n");
+    printf("    [ 1 ] - Charger une partie\n");
+    printf("    [ 2 ] - Quitter le jeu\n\n");
 
     int choix = -1;
     char term;
     printf("> Votre choix : ");
-    while (scanf("%d%c", &choix, &term) != 2 || term != '\n' || (choix != 0 && choix != 1)) {
-        printf("Erreur : Veuillez entrer 1 ou 0.\n");
+    while (scanf("%d%c", &choix, &term) != 2 || term != '\n' || (choix < 0 || choix > 2)) {
+        printf("Erreur : Veuillez entrer 1, 2 ou 0.\n");
         while (getchar() != '\n');
         printf("> Votre choix : ");
     }
+    
     return choix;
 }
