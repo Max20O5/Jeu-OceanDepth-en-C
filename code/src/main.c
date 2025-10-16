@@ -9,9 +9,9 @@ int main() {
     bool running = true;
 
     while (running) {
-        int choix_menu = afficher_menu_principal();
+        int choice = print_menu();
 
-        switch (choix_menu) {
+        switch (choice) {
             case 1:
                 start_game();
                 break;
@@ -22,5 +22,5 @@ int main() {
     }
 
     printf("\nMerci d'avoir joué à OceanDepth\n");
-    return 0;
+    return EXIT_SUCCESS;
 }

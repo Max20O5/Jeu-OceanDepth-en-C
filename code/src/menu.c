@@ -9,7 +9,7 @@ static void clear_screen() {
 #endif
 }
 
-int afficher_menu_principal(void) {
+int print_menu(void) {
     clear_screen();
     printf("==================================================\n");
     printf("     _   _   _   _   _   _     _   _   _   _   _    \n");

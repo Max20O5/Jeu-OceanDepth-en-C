@@ -2,6 +2,6 @@
 #define MENU_H
 
 
-int afficher_menu_principal(void);
+int print_menu(void);
 
-#endif // MENU_H
+#endif
