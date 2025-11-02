@@ -4,29 +4,55 @@
 #include "include.h"
 #include "utils.h"
 
-static void wait_for_enter() {
+void wait_for_enter() {
     printf("\nAppuyez sur Entrée pour continuer...");
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-static void display_combat_status(Plongeur* player, CreatureMarine* creature) {
+void print_progress_bar(int current, int max, int length) {
+    if (max == 0) max = 1;
+    if (current < 0) current = 0;
+    
+    float percent = (float)current / max;
+    int filled_blocks = (int)(percent * length);
+    int empty_blocks = length - filled_blocks;
+
+    printf("[");
+    for (int i = 0; i < filled_blocks; i++) printf("█");
+    for (int i = 0; i < empty_blocks; i++) printf("▒");
+    printf("]");
+}
+
+void display_combat_status(Plongeur* player, CreatureMarine* creature) {
     clear_screen();
-    printf("====================  COMBAT  ====================\n\n");
     
-    // Stats du Joueur
-    printf("  PLAYER: %s\n", player->name);
-    printf("  Vie      [ %d / %d ]\n", player->points_de_vie, player->points_de_vie_max);
-    printf("  Oxygène  [ %d / %d ]\n", player->niveau_oxygene, player->niveau_oxygene_max);
-    printf("  Fatigue  [ %d / 5 ]\n", player->niveau_fatigue);
+    // --- Section Joueur ---
+    printf("OceanDepths - Profondeur: -150m \t\t\t Perles: %d \n", player->perles);
     
-    printf("\n                  VS\n\n");
+    // Barre de Vie
+    printf("Vie     ");
+    print_progress_bar(player->points_de_vie, player->points_de_vie_max, 50);
+    printf(" %d/%d\n", player->points_de_vie, player->points_de_vie_max);
+
+    // Barre d'Oxygène
+    printf("Oxygène ");
+    print_progress_bar(player->niveau_oxygene, player->niveau_oxygene_max, 40);
+    printf(" %d/%d\n", player->niveau_oxygene, player->niveau_oxygene_max);
+
+    // Barre de Fatigue
+    printf("Fatigue ");
+    print_progress_bar(player->niveau_fatigue, 5, 10);
+    printf(" %d/5\n", player->niveau_fatigue);
     
-    // Stats de la Créature
-    printf("  ENNEMI: %s\n", creature->nom);
-    printf("  Vie      [ %d / %d ]\n", creature->points_de_vie_actuels, creature->points_de_vie_max);
+    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+  
+    printf("\n    \t\t\t\t %s\n", creature->nom);
+    printf("    \t\t\t\t(%d/%d PV)\n", creature->points_de_vie_actuels, creature->points_de_vie_max);
+
+    printf("\n\n");
     
-    printf("\n=======================================================\n");
+    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 }
 
 static void apply_item_effects(Plongeur* player, Consommable* item) {
@@ -51,7 +77,7 @@ static void apply_item_effects(Plongeur* player, Consommable* item) {
 
 static bool handle_item_use(Plongeur* player) {
     clear_screen();
-    printf("---  INVENTAIRE  ---\n");
+    printf("--- 🎒 INVENTAIRE 🎒 ---\n");
     printf("Quel objet utiliser ? (0 pour annuler)\n\n");
 
     for (int i = 0; i < 8; i++) {
@@ -170,7 +196,6 @@ void start_combat(Plongeur* player) {
             if (player->niveau_oxygene > player->niveau_oxygene_max) {
                 player->niveau_oxygene = player->niveau_oxygene_max;
             }
-            printf("\n--- BONUS D'OXYGENE ---\n");
             printf("Vous reprenez votre souffle et gagnez %d O² ! (Actuel: %d/%d)\n", 
                    oxygen_gain, player->niveau_oxygene, player->niveau_oxygene_max);
         }
