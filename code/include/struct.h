@@ -12,6 +12,8 @@ typedef struct {
     int attaque_maximale;
     int defense;
     int vitesse;
+    int perles_min;
+    int perles_max;
     char effet_special[20]; // "paralysie", "poison", "aucun"
     bool est_vivant;
 } CreatureMarine;

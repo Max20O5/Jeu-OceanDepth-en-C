@@ -62,6 +62,13 @@ void start_combat(Plongeur* player) {
             enemy.points_de_vie_actuels = 0;
             enemy.est_vivant = false;
             printf("Vous avez vaincu le %s !\n", enemy.nom);
+            int perles_gagnees = randomNumber(enemy.perles_min, enemy.perles_max);
+            player->perles += perles_gagnees;
+            
+            printf("--------------------------\n");
+            printf("Vous récupérez %d perles sur la créature !\n", perles_gagnees);
+            printf("Vous avez maintenant %d perles au total.\n", player->perles);
+            printf("--------------------------\n");
         } else {
             int enemy_damage = randomNumber(
                 enemy.attaque_minimale,
