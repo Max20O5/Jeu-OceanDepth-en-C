@@ -4,7 +4,7 @@
 #include "include.h"
 
 typedef struct {
-    int id;  // identifiant unique pour cibler
+    int id;
     char nom[30];
     int points_de_vie_max;
     int points_de_vie_actuels;
@@ -15,17 +15,6 @@ typedef struct {
     char effet_special[20]; // "paralysie", "poison", "aucun"
     bool est_vivant;
 } CreatureMarine;
-
-
-typedef struct {
-    int points_de_vie;
-    int points_de_vie_max;
-    int niveau_oxygene;
-    int niveau_oxygene_max;
-    int niveau_fatigue; // 0 à 5
-    int perles;// monnaie du jeu
-    char name[50];;
-} Plongeur;
 
 typedef struct {
     int id;
@@ -42,6 +31,17 @@ typedef struct {
     int vitesse_maximale;
     char effet_special[20];
 } Arme;
+
+typedef struct {
+    int points_de_vie;
+    int points_de_vie_max;
+    int niveau_oxygene;
+    int niveau_oxygene_max;
+    int niveau_fatigue; // 0 à 5
+    int perles; // monnaie du jeu
+    char name[50];
+    Arme arme_equipee;
+} Plongeur;
 
 typedef struct {
     int id;

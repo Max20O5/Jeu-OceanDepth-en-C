@@ -1,4 +1,5 @@
 #include "joueur.h"
+#include "weapon.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,9 +11,12 @@ bool is_name_valid(const char* name) {
         return false;
     }
 
-    for (int i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++) {       
         char letter = name[i];
-        if (!((letter >= 'a' && letter <= 'z') || (letter >= 'A' && letter <= 'Z'))) {
+        bool is_letter = (letter >= 'a' && letter <= 'z') || (letter >= 'A' && letter <= 'Z');
+        bool is_space = (letter == ' ');
+
+        if (!is_letter && !is_space) {
             printf("Erreur: Le nom doit contenir seulement des lettres.\n");
             return false;
         }
@@ -46,16 +50,24 @@ Plongeur create_player(void) {
     new_player.niveau_fatigue = 0;
     new_player.perles = 0;
 
+    new_player.arme_equipee = creer_harpon_rouille();
+
     printf("\nLe plongeur '%s' a été crée!\n", new_player.name);
+    printf("Arme équipée: %s\n", new_player.arme_equipee.nom);
     return new_player;
 
 }
 
 void display_player_stats(Plongeur player) {
-    printf("\n--- STATS OF %s ---\n", player.name);
+    printf("\n--- STATS DE %s ---\n", player.name);
     printf("Vie    : %d / %d\n", player.points_de_vie, player.points_de_vie_max);
     printf("Oxygène    : %d / %d\n", player.niveau_oxygene, player.niveau_oxygene_max);
     printf("Fatigue   : %d / 5\n", player.niveau_fatigue);
     printf("Perles     : %d\n", player.perles);
     printf("--------------------------\n");
+    printf("Arme équipée: %s (Dégats: %d-%d)\n",
+         player.arme_equipee.nom
+         , player.arme_equipee.attaque_minimale
+         , player.arme_equipee.attaque_maximale);
+    printf("--------------------------\n");         
 }

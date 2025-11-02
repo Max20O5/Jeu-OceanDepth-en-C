@@ -3,13 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
-
-// Fonction qui renvoie un nombre aléatoire entre min et max
-int randomNumber(int min, int max) {
-    return rand() % (max - min + 1) + min;
-}
-
+#include "utils.h"
 
 // Création du Kraken
 CreatureMarine create_kraken() {

@@ -1,27 +1,21 @@
 #include "menu.h"   
 #include "include.h" 
-
-static void clear_screen() {
-#ifdef _WIN32
-    system("cls");
-#else
-    system("clear");
-#endif
-}
+#include "utils.h"
 
 int print_menu(void) {
     clear_screen();
     printf("==================================================\n");
-    printf("     _   _   _   _   _   _     _   _   _   _   _    \n");
-    printf("    / \\ / \\ / \\ / \\ / \\ / \\   / \\ / \\ / \\ / \\ / \\   \n");
-    printf("   ( O | c | e | a | n | D ) ( e | p | t | h | s )  \n");
-    printf("    \\_/ \\_/ \\_/ \\_/ \\_/ \\_/   \\_/ \\_/ \\_/ \\_/ \\_/   \n");
+    printf("     _   _   _   _   _       _   _   _   _   _   _ \n");
+    printf("    / \\ / \\ / \\ / \\ / \\     / \\ / \\ / \\ / \\ / \\ / \\\n");
+    printf("   ( O | c | e | a | n )   ( D | e | p | t | h | s )\n");
+    printf("    \\_/ \\_/ \\_/ \\_/ \\_/     \\_/ \\_/ \\_/ \\_/ \\_/ \\_/\n");
     printf("\n");
     printf("==================================================\n\n");
     printf("        Entrez Dans les PROFONDEURS !\n\n");
     printf("    [ 0 ] - Nouvelle partie\n");
     printf("    [ 1 ] - Charger une partie\n");
     printf("    [ 2 ] - Quitter le jeu\n\n");
+
 
     int choix = -1;
     char term;
@@ -31,6 +25,5 @@ int print_menu(void) {
         while (getchar() != '\n');
         printf("> Votre choix : ");
     }
-    
     return choix;
 }

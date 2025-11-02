@@ -21,4 +21,3 @@ typedef struct {
     Node_map *actuel; // Position actuelle du joueur
     int taille;       // Nombre de sections
 } Map;//map en liste chainée
-
