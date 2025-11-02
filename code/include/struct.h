@@ -35,17 +35,6 @@ typedef struct {
 } Arme;
 
 typedef struct {
-    int points_de_vie;
-    int points_de_vie_max;
-    int niveau_oxygene;
-    int niveau_oxygene_max;
-    int niveau_fatigue; // 0 à 5
-    int perles; // monnaie du jeu
-    char name[50];
-    Arme arme_equipee;
-} Plongeur;
-
-typedef struct {
     int id;
     char nom[30];
     int defense_minimale;
@@ -64,6 +53,18 @@ typedef struct {
     int oxygene;
     int fatigue;
 } Consommable;
+
+typedef struct {
+    int points_de_vie;
+    int points_de_vie_max;
+    int niveau_oxygene;
+    int niveau_oxygene_max;
+    int niveau_fatigue; // 0 à 5
+    int perles; // monnaie du jeu
+    char name[50];
+    Arme arme_equipee;
+    Consommable inventaire[8];
+} Plongeur;
 
 typedef struct {
     int id;
