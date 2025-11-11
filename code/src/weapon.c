@@ -1,4 +1,5 @@
 #include "weapon.h"
+#include "tab.h"
 #include <string.h>
 
 Arme creer_harpon_rouille(void) {
@@ -20,4 +21,14 @@ Arme creer_harpon_rouille(void) {
     strcpy(harpon.effet_special, "aucun");
 
     return harpon;
+}
+
+Arme get_weapon_by_id(int id) {
+    for (int i = 0; i < g_weapon_count; i++) {
+        if (g_weapon_database[i].id == id) {
+            return g_weapon_database[i];
+        }
+    }
+    // Si on ne trouve pas, on renvoie la première arme par défaut
+    return g_weapon_database[0]; 
 }

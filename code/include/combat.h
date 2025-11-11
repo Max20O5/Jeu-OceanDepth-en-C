@@ -3,7 +3,6 @@
 
 #include "struct.h"
 
+void start_combat(Plongeur* player, CreatureMarine* enemies, int enemy_count);
 
-void start_combat(Plongeur* player);
-
-#endif 
+#endif

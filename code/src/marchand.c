@@ -61,10 +61,10 @@ void open_shop(Plongeur* player) {
 
         switch (choice) {
             case 1:
-                buy_item(player, creer_trousse_de_soin(), PRIX_TROUSSE_SOIN);
+                buy_item(player, get_consommable_by_id(1), PRIX_TROUSSE_SOIN);
                 break;
             case 2:
-                buy_item(player, creer_capsule_oxygene(), PRIX_CAPSULE_O2);
+                buy_item(player, get_consommable_by_id(2), PRIX_CAPSULE_O2);
                 break;
             case 0:
                 is_shopping = false;

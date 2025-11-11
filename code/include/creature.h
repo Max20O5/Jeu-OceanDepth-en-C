@@ -4,8 +4,8 @@
 #include "struct.h"
 
 CreatureMarine createCreature();
-CreatureMarine create_kraken();
 
+CreatureMarine get_creature_by_id(int id);
 void print_creature(CreatureMarine creature);
 
 #endif

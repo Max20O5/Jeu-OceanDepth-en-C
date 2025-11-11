@@ -3,6 +3,20 @@
 
 #include "include.h"
 
+typedef enum {
+    EFFET_AUCUN,
+    EFFET_PARALYSIE,
+    EFFET_BRULURE,
+    EFFET_CHARME,
+    EFFET_BOUCLIER
+} EffectType;
+
+typedef struct {
+    EffectType type;
+    int duration;
+    int potency;
+} StatusEffect;
+
 typedef struct {
     int id;
     char nom[30];
@@ -14,8 +28,14 @@ typedef struct {
     int vitesse;
     int perles_min;
     int perles_max;
-    char effet_special[20]; // "paralysie", "poison", "aucun"
+    EffectType special_attack_effect;
+    int special_attack_chance;   
+    int special_attack_potency;
+    int special_attack_duration;
     bool est_vivant;
+    char effet_special[20];
+    StatusEffect active_effects[5];
+    int active_effect_count;
 } CreatureMarine;
 
 typedef struct {
@@ -32,6 +52,10 @@ typedef struct {
     int vitesse_minimale;
     int vitesse_maximale;
     char effet_special[20];
+    EffectType effect_type_to_apply;
+    int effect_chance;
+    int effect_potency;
+    int effect_duration;
 } Arme;
 
 typedef struct {
@@ -64,6 +88,8 @@ typedef struct {
     char name[50];
     Arme arme_equipee;
     Consommable inventaire[8];
+    StatusEffect active_effects[5];
+    int active_effect_count;
 } Plongeur;
 
 typedef struct {

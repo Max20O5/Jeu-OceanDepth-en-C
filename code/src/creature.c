@@ -1,4 +1,5 @@
 #include "creature.h"
+#include "tab.h"
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,20 +20,25 @@ CreatureMarine create_kraken() {
     kraken.vitesse = randomNumber(5, 15);
     kraken.perles_min = 25;
     kraken.perles_max = 60;
-    strcpy(kraken.effet_special, "Étreinte tentacule");
+    strcpy(kraken.effet_special, "Paralysie");
     kraken.est_vivant = true;
     
     return kraken;
 }
 
-/** 
-CreatureMarine create_crabe() {
-    CreatureMarine crabe;
-...
-    return crabe;
+CreatureMarine get_creature_by_id(int id) {
+    for (int i = 0; i < g_creature_count; i++) {
+        if (g_creature_database[i].id == id) {
+            CreatureMarine copy = g_creature_database[i]; 
+            
+            copy.points_de_vie_max = randomNumber(copy.points_de_vie_max, copy.points_de_vie_max);
+            copy.points_de_vie_actuels = copy.points_de_vie_max;
+            
+            return copy;
+        }
+    }
+    return g_creature_database[0];
 }
-**/
-
 // Afficher le mob
 void print_creature(CreatureMarine creature) {
     printf("--- %s ---\n", creature.nom);

@@ -3,8 +3,6 @@
 
 #include "struct.h"
 
-Consommable creer_slot_vide(void);
-Consommable creer_trousse_de_soin(void);
-Consommable creer_capsule_oxygene(void);
+Consommable get_consommable_by_id(int id);
 
-#endif // CONSOMMABLE_H
+#endif

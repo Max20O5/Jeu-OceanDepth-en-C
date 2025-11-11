@@ -3,7 +3,6 @@
 
 #include "struct.h"
 
-
-Arme creer_harpon_rouille(void);
+Arme get_weapon_by_id(int id);
 
 #endif 

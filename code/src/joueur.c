@@ -50,16 +50,15 @@ Plongeur create_player(void) {
     new_player.niveau_oxygene = 100;
     new_player.niveau_fatigue = 0;
     new_player.perles = 0;
-
-    new_player.arme_equipee = creer_harpon_rouille();
+    new_player.active_effect_count = 0;
+    new_player.arme_equipee = get_weapon_by_id(3);
 
     for (int i = 0; i < 8; i++) {
-        new_player.inventaire[i] = creer_slot_vide();
+        new_player.inventaire[i] = get_consommable_by_id(0); 
     }
-    
-    new_player.inventaire[0] = creer_trousse_de_soin();
-    new_player.inventaire[1] = creer_trousse_de_soin();
-    new_player.inventaire[2] = creer_capsule_oxygene();
+    new_player.inventaire[0] = get_consommable_by_id(1);
+    new_player.inventaire[1] = get_consommable_by_id(1);
+    new_player.inventaire[2] = get_consommable_by_id(2);
 
     printf("\nLe plongeur '%s' a été crée!\n", new_player.name);
     printf("Arme équipée: %s\n", new_player.arme_equipee.nom);
