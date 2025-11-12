@@ -11,11 +11,30 @@ typedef enum {
     EFFET_BOUCLIER
 } EffectType;
 
+typedef enum {
+    SKILL_EFFECT_NONE,
+    SKILL_EFFECT_HEAL_OXYGEN,
+    SKILL_EFFECT_DAMAGE_AOE,
+    SKILL_EFFECT_PACIFY,
+    SKILL_EFFECT_DEBUFF_SPEED
+} SkillEffectType;
+
+
 typedef struct {
     EffectType type;
     int duration;
     int potency;
 } StatusEffect;
+
+typedef struct {
+    int id;
+    char nom[30];
+    int cost_oxygene;
+    int cost_fatigue;
+    SkillEffectType effect_type;
+    int potency;
+    int cooldown;
+} CompetenceAquatique;
 
 typedef struct {
     int id;
@@ -90,6 +109,8 @@ typedef struct {
     Consommable inventaire[8];
     StatusEffect active_effects[5];
     int active_effect_count;
+    CompetenceAquatique competences_apprises[4];
+    int competences_cooldowns[4];
 } Plongeur;
 
 typedef struct {

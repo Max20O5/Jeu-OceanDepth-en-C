@@ -7,8 +7,8 @@ int main() {
     
     srand(time(NULL));
 
-    if (!load_game_data("config.txt")) {
-        printf("Echec du chargement des données.\n");
+    if (!load_all_game_data("config")) {
+        printf("Echec du chargement des données. Vérifiez les fichiers dans /config.\n");
         return EXIT_FAILURE;
     }
 

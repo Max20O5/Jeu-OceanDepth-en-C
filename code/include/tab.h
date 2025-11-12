@@ -16,6 +16,9 @@ extern int g_creature_count;
 extern Consommable* g_consommable_database;
 extern int g_consommable_count;
 
+extern CompetenceAquatique* g_skill_database;
+extern int g_skill_count;
+
 typedef struct Node_map {
     Map_section section;
     struct Node_map *nord;

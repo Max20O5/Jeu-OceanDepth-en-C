@@ -1,5 +1,7 @@
 #include "joueur.h"
 #include "weapon.h"
+#include "tab.h"
+#include "competence.h"
 #include "consommable.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,6 +61,12 @@ Plongeur create_player(void) {
     new_player.inventaire[0] = get_consommable_by_id(1);
     new_player.inventaire[1] = get_consommable_by_id(1);
     new_player.inventaire[2] = get_consommable_by_id(2);
+    new_player.competences_apprises[0] = get_skill_by_id(1);
+    new_player.competences_apprises[1] = get_skill_by_id(2);
+    
+    for (int i = 0; i < 4; i++) {
+        new_player.competences_cooldowns[i] = 0;
+    }
 
     printf("\nLe plongeur '%s' a été crée!\n", new_player.name);
     printf("Arme équipée: %s\n", new_player.arme_equipee.nom);
@@ -81,11 +89,6 @@ void display_player_stats(Plongeur player) {
     
     printf("INVENTAIRE (8 slots max):\n");
     for (int i = 0; i < 8; i++) {
-        // Affiche l'objet seulement s'il n'est pas "Vide" (ID 0)
-        // if (player.inventaire[i].id != 0) { 
-        // }
-        
-        // Pour l'instant, on affiche tout pour voir les slots vides
         printf("  [%d] - %s\n", i + 1, player.inventaire[i].nom);
     }
     printf("--------------------------\n");

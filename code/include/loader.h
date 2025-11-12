@@ -3,8 +3,7 @@
 
 #include "include.h"
 
-bool load_game_data(const char* filename);
-
+bool load_all_game_data(const char* config_path);
 void free_game_data(void);
 
 #endif

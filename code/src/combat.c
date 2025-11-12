@@ -1,6 +1,7 @@
 #include "combat.h"
 #include "creature.h"
 #include "consommable.h"
+#include "competence.h"
 #include "include.h"
 #include "utils.h"
 #include "effects.h"
@@ -37,7 +38,7 @@ void display_combat_status(Plongeur* player, CreatureMarine* enemies, int enemy_
     // --- Section Ennemis ---
     for (int i = 0; i < enemy_count; i++) {
         if (enemies[i].est_vivant) {
-            printf("  [%d] 🥐 %s \t", i + 1, enemies[i].nom);
+            printf("  [%d] ❤️  %s \t", i + 1, enemies[i].nom);
         } else {
             printf("  [%d] ☠️ MORT \t\t", i + 1);
         }
@@ -66,7 +67,20 @@ void apply_item_effects(Plongeur* player, Consommable* item) {
         if (player->niveau_oxygene > player->niveau_oxygene_max) player->niveau_oxygene = player->niveau_oxygene_max;
         printf("Vous récupérez %d O². (Oxygène: %d/%d)\n", item->oxygene, player->niveau_oxygene, player->niveau_oxygene_max);
     }
-}
+    if (item->fatigue != 0) {
+        player->niveau_fatigue += item->fatigue;
+        
+        if (player->niveau_fatigue < 0) player->niveau_fatigue = 0;
+        if (player->niveau_fatigue > 5) player->niveau_fatigue = 5;
+        
+        if (item->fatigue < 0) {
+            printf("Vous sentez l'adrénaline monter ! (Fatigue: %d/5)\n", player->niveau_fatigue);
+        } else {
+            printf("Vous vous sentez plus lourd... (Fatigue: %d/5)\n", player->niveau_fatigue);
+        }
+    }
+}    
+
 
 bool handle_item_use(Plongeur* player) {
     clear_screen();
@@ -247,6 +261,7 @@ void start_combat(Plongeur* player, CreatureMarine* enemies, int enemy_count) {
         printf("\nActions disponibles:\n");
         printf("1 - Attaquer (Coût: %d O²)\n", player->arme_equipee.consommation_oxygene);
         printf("2 - Utiliser un objet\n");
+        printf("3 - Utiliser une compétence\n");
         printf("> Votre choix : ");
         
         int choice = -1;
@@ -258,11 +273,21 @@ void start_combat(Plongeur* player, CreatureMarine* enemies, int enemy_count) {
         }
 
         // --- GESTION DU TOUR DU JOUEUR ---
-        if (choice == 1) {
-            player_turn_over = handle_player_attack(player, enemies, enemy_count);
-        } else if (choice == 2) {
-            player_turn_over = handle_item_use(player);
+        switch (choice) {
+            case 1:
+                player_turn_over = handle_player_attack(player, enemies, enemy_count);
+                break;
+            case 2:
+                player_turn_over = handle_item_use(player);
+                break;
+            case 3:
+                player_turn_over = handle_skill_use(player, enemies, enemy_count);
+                break;
+            default:
+                printf("Action invalide. Veuillez choisir une action valide.\n");
+                break;
         }
+        
 
         // --- VERIFICATION DE VICTOIRE ---
         if (are_all_enemies_dead(enemies, enemy_count)) {
@@ -278,7 +303,14 @@ void start_combat(Plongeur* player, CreatureMarine* enemies, int enemy_count) {
                 break;
             }
         }
-        
+
+        if (player->niveau_fatigue > 0) {
+                player->niveau_fatigue--;
+                printf("\n~ Vous reprenez votre souffle. (Fatigue réduite à %d/5) ~\n", player->niveau_fatigue);
+            }
+
+        reduce_all_skill_cooldowns(player);
+
         if (player->points_de_vie > 0) {
             wait_for_enter();
         }
