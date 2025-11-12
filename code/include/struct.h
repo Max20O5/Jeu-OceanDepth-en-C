@@ -8,7 +8,8 @@ typedef enum {
     EFFET_PARALYSIE,
     EFFET_BRULURE,
     EFFET_CHARME,
-    EFFET_BOUCLIER
+    EFFET_BOUCLIER,
+    EFFET_RALENTISSEMENT
 } EffectType;
 
 typedef enum {

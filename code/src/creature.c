@@ -6,25 +6,6 @@
 #include <string.h>
 #include <time.h>
 
-// Création du Kraken
-CreatureMarine create_kraken() {
-    CreatureMarine kraken;
-
-    kraken.id = 1;
-    strcpy(kraken.nom, "Kraken");
-    kraken.points_de_vie_max = randomNumber(10, 30);
-    kraken.points_de_vie_actuels = kraken.points_de_vie_max;
-    kraken.attaque_minimale = randomNumber(20, 30);
-    kraken.attaque_maximale = randomNumber(30, 50);
-    kraken.defense = randomNumber(10, 20);
-    kraken.vitesse = randomNumber(5, 15);
-    kraken.perles_min = 25;
-    kraken.perles_max = 60;
-    strcpy(kraken.effet_special, "Paralysie");
-    kraken.est_vivant = true;
-    
-    return kraken;
-}
 
 CreatureMarine get_creature_by_id(int id) {
     for (int i = 0; i < g_creature_count; i++) {
@@ -39,7 +20,7 @@ CreatureMarine get_creature_by_id(int id) {
     }
     return g_creature_database[0];
 }
-// Afficher le mob
+
 void print_creature(CreatureMarine creature) {
     printf("--- %s ---\n", creature.nom);
     printf("PV: %d / %d\n", creature.points_de_vie_actuels, creature.points_de_vie_max);

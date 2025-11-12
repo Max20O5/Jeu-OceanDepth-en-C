@@ -149,7 +149,7 @@ bool load_skills(const char* filename) {
     char buffer[256];
     int skill_idx = 0;
 
-    // Lire le compteur et allouer
+    //  Lire le compteur et allouer
     fgets(buffer, sizeof(buffer), file);
     if (sscanf(buffer, "SKILL_COUNT: %d", &g_skill_count) != 1) {
         fprintf(stderr, "Erreur : %s n'a pas de SKILL_COUNT valide.\n", filename);
@@ -164,22 +164,28 @@ bool load_skills(const char* filename) {
 
         CompetenceAquatique* s = &g_skill_database[skill_idx];
         char temp_effect_type[30];
-        sscanf(buffer, "SKILL;%d;%[^;];%d;%d;%[^;];%d;%d",
+
+        int result = sscanf(buffer, "SKILL;%d;%[^;];%d;%d;%[^;];%d;%d",
                &s->id, 
-               s->nom,
+               s->nom,            
                &s->cost_oxygene, 
                &s->cost_fatigue,
                temp_effect_type,
                &s->potency, 
                &s->cooldown);
         
-        s->effect_type = skill_effect_from_string(temp_effect_type);
-        skill_idx++;
-    }
+        if (result == 7) { 
 
+            s->effect_type = skill_effect_from_string(temp_effect_type);
+            skill_idx++;
+        } else {
+            fprintf(stderr, "Erreur : Ligne de compétence mal formatée : %s\n", buffer);
+        }
+    }
     fclose(file);
     printf("... %d Compétences chargées.\n", g_skill_count);
     return true;
+
 }
 
 

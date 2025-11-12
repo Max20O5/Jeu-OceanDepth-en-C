@@ -244,6 +244,11 @@ void handle_victory(Plongeur* player, CreatureMarine* enemies, int enemy_count) 
     }
     printf("Vous reprenez votre souffle et gagnez %d O² ! (Actuel: %d/%d)\n", 
            oxygen_gain, player->niveau_oxygene, player->niveau_oxygene_max);
+    
+    if (player->niveau_fatigue > 0) {
+        player->niveau_fatigue--;
+        printf("Vous vous reposez un instant. (Fatigue réduite à %d/5)\n", player->niveau_fatigue);
+    }
 }
 
 void start_combat(Plongeur* player, CreatureMarine* enemies, int enemy_count) {
@@ -302,14 +307,9 @@ void start_combat(Plongeur* player, CreatureMarine* enemies, int enemy_count) {
                 printf("\nVous sombrez dans les limbes pour l'éternité...\n");
                 break;
             }
+            
+            reduce_all_skill_cooldowns(player);
         }
-
-        if (player->niveau_fatigue > 0) {
-                player->niveau_fatigue--;
-                printf("\n~ Vous reprenez votre souffle. (Fatigue réduite à %d/5) ~\n", player->niveau_fatigue);
-            }
-
-        reduce_all_skill_cooldowns(player);
 
         if (player->points_de_vie > 0) {
             wait_for_enter();
