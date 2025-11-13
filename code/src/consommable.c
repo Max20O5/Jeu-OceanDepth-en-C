@@ -33,3 +33,25 @@ Consommable creer_capsule_oxygene(void) {
     oxygene.fatigue = 0;
     return oxygene;
 }
+
+Consommable creer_stimulant_marin(void) {
+    Consommable stimulant;
+    stimulant.id = 3;
+    strcpy(stimulant.nom, "Stimulant Marin");
+    strcpy(stimulant.effet_special, "fatigue");
+    stimulant.soin = 0;
+    stimulant.oxygene = 0;
+    stimulant.fatigue = -2; // Réduit la fatigue de 2
+    return stimulant;
+}
+
+Consommable creer_antidote(void) {
+    Consommable antidote;
+    antidote.id = 4;
+    strcpy(antidote.nom, "Antidote");
+    strcpy(antidote.effet_special, "antidote");
+    antidote.soin = 0;
+    antidote.oxygene = 0;
+    antidote.fatigue = 0;
+    return antidote;
+}
