@@ -44,6 +44,7 @@ typedef struct {
 typedef struct {
     int id;
     char nom[30];
+    int points_de_vie_min;
     int points_de_vie_max;
     int points_de_vie_actuels;
     int attaque_minimale;

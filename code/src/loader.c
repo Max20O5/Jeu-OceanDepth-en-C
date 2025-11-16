@@ -88,10 +88,10 @@ bool load_creatures(const char* filename) {
 
         CreatureMarine* c = &g_creature_database[creature_idx];
         sscanf(buffer, "CREATURE;%d;%[^;];%d;%d;%d;%d;%d;%d;%d;%[^\n]",
-               &c->id, c->nom, &c->points_de_vie_max, &c->points_de_vie_max,
+               &c->id, c->nom, &c->points_de_vie_min, &c->points_de_vie_max,
                &c->attaque_minimale, &c->attaque_maximale, &c->defense,
                &c->perles_min, &c->perles_max, c->effet_special);
-        
+
         // Initialiser les valeurs par défaut
         c->points_de_vie_actuels = c->points_de_vie_max;
         c->est_vivant = true;
