@@ -59,6 +59,7 @@ Ce projet implémente les fonctionnalités suivantes :
     * Système de Niveau et d'Expérience (XP).
     * Montée de niveau avec amélioration des statistiques (PV max, O2 max).
 
+[Voir la progression détaillée](PROGRESSIONS.md)
 #
 
 ```
@@ -264,3 +265,4 @@ OceanDepth/
 └───saves/
         oceandepth_save.txt
 ```
+
