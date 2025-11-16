@@ -11,6 +11,8 @@ Consommable* g_consommable_database = NULL;
 int g_consommable_count = 0;
 CompetenceAquatique* g_skill_database = NULL;
 int g_skill_count = 0;
+Equipement* g_equipement_database = NULL;
+int g_equipement_count = 0;
 
 bool parse_line(char* line) {
     if (line[0] == '\n' || line[0] == '#' || line[0] == '\0') {
@@ -88,10 +90,10 @@ bool load_creatures(const char* filename) {
 
         CreatureMarine* c = &g_creature_database[creature_idx];
         sscanf(buffer, "CREATURE;%d;%[^;];%d;%d;%d;%d;%d;%d;%d;%[^\n]",
-               &c->id, c->nom, &c->points_de_vie_max, &c->points_de_vie_max,
+               &c->id, c->nom, &c->points_de_vie_min, &c->points_de_vie_max,
                &c->attaque_minimale, &c->attaque_maximale, &c->defense,
                &c->perles_min, &c->perles_max, c->effet_special);
-        
+
         // Initialiser les valeurs par défaut
         c->points_de_vie_actuels = c->points_de_vie_max;
         c->est_vivant = true;
@@ -149,7 +151,7 @@ bool load_skills(const char* filename) {
     char buffer[256];
     int skill_idx = 0;
 
-    //  Lire le compteur et allouer
+    // Lire le compteur et allouer
     fgets(buffer, sizeof(buffer), file);
     if (sscanf(buffer, "SKILL_COUNT: %d", &g_skill_count) != 1) {
         fprintf(stderr, "Erreur : %s n'a pas de SKILL_COUNT valide.\n", filename);
@@ -164,42 +166,82 @@ bool load_skills(const char* filename) {
 
         CompetenceAquatique* s = &g_skill_database[skill_idx];
         char temp_effect_type[30];
-
-        int result = sscanf(buffer, "SKILL;%d;%[^;];%d;%d;%[^;];%d;%d",
+        sscanf(buffer, "SKILL;%d;%[^;];%d;%d;%[^;];%d;%d",
                &s->id, 
-               s->nom,            
+               s->nom,
                &s->cost_oxygene, 
                &s->cost_fatigue,
                temp_effect_type,
                &s->potency, 
                &s->cooldown);
         
-        if (result == 7) { 
-
-            s->effect_type = skill_effect_from_string(temp_effect_type);
-            skill_idx++;
-        } else {
-            fprintf(stderr, "Erreur : Ligne de compétence mal formatée : %s\n", buffer);
-        }
+        s->effect_type = skill_effect_from_string(temp_effect_type);
+        skill_idx++;
     }
+
     fclose(file);
     printf("... %d Compétences chargées.\n", g_skill_count);
     return true;
-
 }
 
+bool load_equipements(const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        fprintf(stderr, "Erreur : Impossible d'ouvrir %s\n", filename);
+        return false;
+    }
+
+    char buffer[256];
+    int equip_idx = 0;
+
+    // 1. Lire le compteur et allouer
+    fgets(buffer, sizeof(buffer), file);
+    if (sscanf(buffer, "EQUIPEMENT_COUNT: %d", &g_equipement_count) != 1) {
+        fprintf(stderr, "Erreur : %s n'a pas de EQUIPEMENT_COUNT valide.\n", filename);
+        fclose(file);
+        return false;
+    }
+    g_equipement_database = malloc(sizeof(Equipement) * g_equipement_count);
+
+    // 2. Lire les données
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        if (!parse_line(buffer)) continue;
+
+        Equipement* e = &g_equipement_database[equip_idx];
+        // Format: EQUIPEMENT;id;nom;def_min;def_max;oxy_reduc;effet_special
+        int result = sscanf(buffer, "EQUIPEMENT;%d;%[^;];%d;%d;%d;%[^\n]",
+               &e->id,
+               e->nom,
+               &e->defense_minimale,
+               &e->defense_maximale,
+               &e->consommation_oxygene_reduction,
+               e->effet_special);
+
+        if (result != 6) {
+            fprintf(stderr, "Erreur : Ligne d'équipement mal formatée : %s\n", buffer);
+        }
+
+        equip_idx++;
+    }
+
+    fclose(file);
+    printf("... %d Equipements chargés.\n", g_equipement_count);
+    return true;
+}
 
 bool load_all_game_data(const char* config_path) {
     char weapon_file[100];
     char creature_file[100];
     char consumable_file[100];
     char skill_file[100];
+    char equipement_file[100];
 
     sprintf(weapon_file, "%s/weapons.cfg", config_path);
     sprintf(creature_file, "%s/creatures.cfg", config_path);
     sprintf(consumable_file, "%s/consumables.cfg", config_path);
     sprintf(skill_file, "%s/skills.cfg", config_path);
-    
+    sprintf(equipement_file, "%s/equipements.cfg", config_path);
+
     printf("Chargement des données du jeu depuis '%s'...\n", config_path);
 
 
@@ -207,6 +249,7 @@ bool load_all_game_data(const char* config_path) {
     if (!load_creatures(creature_file)) return false;
     if (!load_consumables(consumable_file)) return false;
     if (!load_skills(skill_file)) return false;
+    if (!load_equipements(equipement_file)) return false;
 
     printf("Toutes les données du jeu ont été chargées avec succès.\n");
     return true;
@@ -217,9 +260,11 @@ void free_game_data(void) {
     free(g_creature_database);
     free(g_consommable_database);
     free(g_skill_database);
+    free(g_equipement_database);
     
     g_weapon_database = NULL;
     g_creature_database = NULL;
     g_consommable_database = NULL;
     g_skill_database = NULL;
+    g_equipement_database = NULL;
 }

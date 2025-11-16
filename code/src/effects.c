@@ -132,11 +132,7 @@ bool process_enemy_effects(CreatureMarine* enemy) {
                 can_act = false;
                 printf("%s est charmé et passe son tour, confus.\n", enemy->nom);
                 break;
-            case EFFET_RALENTISSEMENT:
-                if (randomNumber(1, 100) <= 50) {
-                    can_act = false;
-                    printf("%s est trop ralenti et rate son action !\n", enemy->nom);
-                }
+                
             default: break;
         }
 

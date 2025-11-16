@@ -18,39 +18,41 @@ void print_progress_bar(int current, int max, int length) {
     printf("]");
 }
 
-void display_combat_status(Plongeur* player, CreatureMarine* enemies, int enemy_count) {
+void display_combat_status_profondeur(Plongeur* player, CreatureMarine* enemies, int enemy_count, int profondeur) {
     clear_screen();
-    
+
     // --- Section Joueur ---
-    printf("OceanDepths - Profondeur: -150m \t\t\t Perles: %d\n", player->perles);
+    printf("OceanDepths - Profondeur: %dm | Niv: %d | XP: %d/%d | Perles: %d\n",
+           profondeur, player->niveau, player->experience, player->experience_prochain_niveau, player->perles);
     printf("Vie     ");
     print_progress_bar(player->points_de_vie, player->points_de_vie_max, 50);
     printf(" %d/%d\n", player->points_de_vie, player->points_de_vie_max);
     printf("Oxygène ");
     print_progress_bar(player->niveau_oxygene, player->niveau_oxygene_max, 40);
-    printf(" %d/%d\n", player->niveau_oxygene, player->niveau_oxygene_max);
+    printf(" %d/%d", player->niveau_oxygene, player->niveau_oxygene_max);
+    if (player->niveau_oxygene <= 10) {
+        printf(" *** ALERTE CRITIQUE ***");
+    }
+    printf("\n");
     printf("Fatigue ");
     print_progress_bar(player->niveau_fatigue, 5, 10);
     printf(" %d/5\n", player->niveau_fatigue);
-    
+
     printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 
     // --- Section Ennemis ---
     for (int i = 0; i < enemy_count; i++) {
         if (enemies[i].est_vivant) {
-            printf("  [%d] ❤️  %s \t", i + 1, enemies[i].nom);
-        } else {
-            printf("  [%d] ☠️ MORT \t\t", i + 1);
+            printf("  [%d] %s \t\t (%d/%d PV)\n",
+                   i + 1, enemies[i].nom,
+                   enemies[i].points_de_vie_actuels, enemies[i].points_de_vie_max);
         }
     }
-    printf("\n");
-    
-    for (int i = 0; i < enemy_count; i++) {
-        if (enemies[i].est_vivant) {
-            printf("      (%d/%d PV) \t", enemies[i].points_de_vie_actuels, enemies[i].points_de_vie_max);
-        }
-    }
-    printf("\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+    printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+}
+
+void display_combat_status(Plongeur* player, CreatureMarine* enemies, int enemy_count) {
+    display_combat_status_profondeur(player, enemies, enemy_count, -150);
 }
 
 // === Gestion de l'inventaire ===
@@ -251,56 +253,90 @@ void handle_victory(Plongeur* player, CreatureMarine* enemies, int enemy_count) 
     }
 }
 
+// Calculer le nombre d'attaques max selon la fatigue
+int get_max_attaques_from_fatigue(int fatigue) {
+    if (fatigue <= 1) return 3;
+    if (fatigue <= 3) return 2;
+    return 1; // fatigue 4-5
+}
+
 void start_combat(Plongeur* player, CreatureMarine* enemies, int enemy_count) {
-    
+
     printf("Des créatures sauvages apparaissent des profondeurs !\n");
     wait_for_enter();
 
     // Boucle de combat principale
     while (player->points_de_vie > 0) {
-        
+
         display_combat_status(player, enemies, enemy_count);
-        
-        bool player_turn_over = false;
 
-        printf("\nActions disponibles:\n");
-        printf("1 - Attaquer (Coût: %d O²)\n", player->arme_equipee.consommation_oxygene);
-        printf("2 - Utiliser un objet\n");
-        printf("3 - Utiliser une compétence\n");
-        printf("> Votre choix : ");
-        
-        int choice = -1;
-        char term;
-        while (scanf("%d%c", &choice, &term) != 2 || term != '\n' || (choice < 0 || choice > 8)) {
-            printf("Erreur : Entrez 1-8 ou 0.\n");
-            while (getchar() != '\n');
+        // Calculer le nombre max d'attaques selon la fatigue
+        int max_attaques = get_max_attaques_from_fatigue(player->niveau_fatigue);
+        int attaques_effectuees = 0;
+        bool tour_termine = false;
+
+        printf("\n--- VOTRE TOUR ---\n");
+        printf("Attaques disponibles ce tour: %d (Fatigue: %d/5)\n", max_attaques, player->niveau_fatigue);
+
+        // Phase du joueur - plusieurs attaques possibles
+        while (attaques_effectuees < max_attaques && !tour_termine) {
+            printf("\nActions disponibles:\n");
+            printf("1 - Attaquer (Coût: %d O²)\n", player->arme_equipee.consommation_oxygene);
+            printf("2 - Utiliser un objet\n");
+            printf("3 - Utiliser une compétence\n");
+            printf("4 - Terminer le tour\n");
             printf("> Votre choix : ");
-        }
 
-        // --- GESTION DU TOUR DU JOUEUR ---
-        switch (choice) {
-            case 1:
-                player_turn_over = handle_player_attack(player, enemies, enemy_count);
-                break;
-            case 2:
-                player_turn_over = handle_item_use(player);
-                break;
-            case 3:
-                player_turn_over = handle_skill_use(player, enemies, enemy_count);
-                break;
-            default:
-                printf("Action invalide. Veuillez choisir une action valide.\n");
-                break;
-        }
-        
+            int choice = -1;
+            char term;
+            while (scanf("%d%c", &choice, &term) != 2 || term != '\n' || (choice < 1 || choice > 4)) {
+                printf("Erreur : Veuillez entrer 1, 2, 3 ou 4.\n");
+                while (getchar() != '\n');
+                printf("> Votre choix : ");
+            }
 
-        // --- VERIFICATION DE VICTOIRE ---
-        if (are_all_enemies_dead(enemies, enemy_count)) {
-            handle_victory(player, enemies, enemy_count);
-            break;
+            if (choice == 4) {
+                printf("Vous terminez votre tour.\n");
+                tour_termine = true;
+                break;
+            }
+
+            // --- GESTION DES ACTIONS ---
+            bool action_reussie = false;
+            switch (choice) {
+                case 1:
+                    action_reussie = handle_player_attack(player, enemies, enemy_count);
+                    if (action_reussie) {
+                        attaques_effectuees++;
+                        player->niveau_fatigue++;
+                        if (player->niveau_fatigue > 5) player->niveau_fatigue = 5;
+                        printf("(Attaques effectuées: %d/%d) (Fatigue: %d/5)\n",
+                               attaques_effectuees, max_attaques, player->niveau_fatigue);
+                    }
+                    break;
+                case 2:
+                    action_reussie = handle_item_use(player);
+                    if (action_reussie) {
+                        tour_termine = true; // Utiliser un objet termine le tour
+                    }
+                    break;
+                case 3:
+                    action_reussie = handle_skill_use(player, enemies, enemy_count);
+                    if (action_reussie) {
+                        tour_termine = true; // Utiliser une compétence termine le tour
+                    }
+                    break;
+            }
+
+            // --- VERIFICATION DE VICTOIRE ---
+            if (are_all_enemies_dead(enemies, enemy_count)) {
+                handle_victory(player, enemies, enemy_count);
+                return;
+            }
         }
 
         // --- TOUR DES ENNEMIS ---
+<<<<<<< HEAD
         if (player_turn_over) {
             handle_enemies_turn(player, enemies, enemy_count);
             if (player->points_de_vie <= 0) {
@@ -311,6 +347,22 @@ void start_combat(Plongeur* player, CreatureMarine* enemies, int enemy_count) {
             reduce_all_skill_cooldowns(player);
         }
 
+=======
+        handle_enemies_turn(player, enemies, enemy_count);
+        if (player->points_de_vie <= 0) {
+            printf("\nVous sombrez dans les limbes pour l'éternité...\n");
+            break;
+        }
+
+        // Réduction de la fatigue en fin de tour
+        if (player->niveau_fatigue > 0) {
+            player->niveau_fatigue--;
+            printf("\n~ Vous reprenez votre souffle. (Fatigue réduite à %d/5) ~\n", player->niveau_fatigue);
+        }
+
+        reduce_all_skill_cooldowns(player);
+
+>>>>>>> mon-travail
         if (player->points_de_vie > 0) {
             wait_for_enter();
         }
