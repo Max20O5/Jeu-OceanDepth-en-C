@@ -93,3 +93,33 @@ void display_player_stats(Plongeur player) {
     }
     printf("--------------------------\n");
 }
+
+// Fonction de gain d'expérience
+void gagner_experience(Plongeur* player, int xp) {
+    if (!player) return;
+    
+    player->experience += xp;
+    printf("  +%d XP\n", xp);
+    
+    // Vérifier si level up
+    while (player->experience >= player->experience_prochain_niveau) {
+        player->niveau++;
+        player->experience -= player->experience_prochain_niveau;
+        player->experience_prochain_niveau = (int)(player->experience_prochain_niveau * 1.5f);
+        
+        // Bonus de level up
+        player->points_de_vie_max += 10;
+        player->points_de_vie = player->points_de_vie_max;
+        player->niveau_oxygene_max += 10;
+        player->niveau_oxygene = player->niveau_oxygene_max;
+        
+        printf("\n");
+        printf("╔═══════════════════════════════════════════════════════════╗\n");
+        printf("║              🌟 LEVEL UP! 🌟                            ║\n");
+        printf("╚═══════════════════════════════════════════════════════════╝\n");
+        printf("  Niveau %d atteint!\n", player->niveau);
+        printf("  +10 PV max (Total: %d)\n", player->points_de_vie_max);
+        printf("  +10 O2 max (Total: %d)\n", player->niveau_oxygene_max);
+        printf("  Prochain niveau: %d XP\n\n", player->experience_prochain_niveau);
+    }
+}

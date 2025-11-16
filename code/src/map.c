@@ -174,7 +174,7 @@ Zone* generer_zone(int zone_number, MapConfig* config) {
     }
 
     printf("\n╔═══════════════════════════════════════════════════════════╗\n");
-    printf("║        🌊 NOUVELLE ZONE GÉNÉRÉE 🌊                      ║\n");
+    printf("║        🌊 NOUVELLE ZONE GÉNÉRÉE 🌊                        ║\n");
     printf("╚═══════════════════════════════════════════════════════════╝\n");
     printf("  %s\n", zone->zone_name);
     printf("  Profondeur de base: %dm\n", zone->base_depth);
@@ -252,9 +252,9 @@ void afficher_carte(Carte* carte) {
            zone->player_x, zone->player_y);
     printf("║\n");
     printf("╠════════════════════════════════════════════════════════════════╣\n");
-    printf("║ Légende: 🌊=Vous | ⚔️=Combat | 💰=Trésor | 🎒=Marchand          ║\n");
-    printf("║          💀=Boss | 🕳️=Grotte (Sauvegarde)                     ║\n");
-    printf("║          ❓=Inexploré | ✓=Complété                            ║\n");
+    printf("║ Légende: 🌊=Vous | ⚔️=Combat | 💰=Trésor | 🎒=Marchand        ║\n");
+    printf("║          💀=Boss | 🕳️=Grotte (Sauvegarde)                      ║\n");
+    printf("║          ❓=Inexploré | ✓=Complété                             ║\n");
     printf("╚════════════════════════════════════════════════════════════════╝\n\n");
 }
 
@@ -335,7 +335,7 @@ void passer_zone_suivante(Carte* carte) {
 
     printf("\n");
     printf("╔═══════════════════════════════════════════════════════════╗\n");
-    printf("║     🎉 VOUS PROGRESSEZ VERS UNE NOUVELLE ZONE! 🎉       ║\n");
+    printf("║     🎉 VOUS PROGRESSEZ VERS UNE NOUVELLE ZONE! 🎉         ║\n");
     printf("╚═══════════════════════════════════════════════════════════╝\n\n");
 }
 
@@ -410,12 +410,15 @@ void explorer_tuile(Carte* carte, Plongeur* joueur) {
             // Créer les créatures pour le combat
             CreatureMarine* ennemis = malloc(sizeof(CreatureMarine) * tile->nb_ennemis);
             for (int i = 0; i < tile->nb_ennemis; i++) {
-                ennemis[i] = creerCreature(tile->enemy_ids[i], get_profondeur_actuelle(carte));
+                ennemis[i] = get_creature_by_id(tile->enemy_ids[i]);
                 ennemis[i].zone = zone->zone_number;  // Assigner la zone
             }
 
             // Lancer le combat
-            bool victoire = combat(joueur, ennemis, tile->nb_ennemis, get_profondeur_actuelle(carte));
+            start_combat(joueur, ennemis, tile->nb_ennemis);
+
+            // Vérifier si le joueur a survécu
+            bool victoire = (joueur->points_de_vie > 0);
 
             free(ennemis);
 
@@ -482,7 +485,7 @@ void explorer_tuile(Carte* carte, Plongeur* joueur) {
             printf("   Vous devez le vaincre pour progresser!\n\n");
 
             // Créer le boss
-            CreatureMarine boss = creerCreature(6, get_profondeur_actuelle(carte));  // ID 6 = boss
+            CreatureMarine boss = get_creature_by_id(6);  // ID 6 = boss
             boss.zone = zone->zone_number;
 
             // Appliquer le multiplicateur de difficulté de zone
@@ -495,7 +498,8 @@ void explorer_tuile(Carte* carte, Plongeur* joueur) {
             boss.attaque_minimale = (int)(boss.attaque_minimale * multiplier);
             boss.attaque_maximale = (int)(boss.attaque_maximale * multiplier);
 
-            bool victoire_boss = combat(joueur, &boss, 1, get_profondeur_actuelle(carte));
+            start_combat(joueur, &boss, 1);
+            bool victoire_boss = (joueur->points_de_vie > 0);
 
             if (victoire_boss) {
                 printf("\n");
