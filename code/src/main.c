@@ -1,10 +1,16 @@
 #include "include.h"
 #include "game.h"
 #include "menu.h"
+#include "loader.h"
 
 int main() {
     
     srand(time(NULL));
+
+    if (!load_all_game_data("config")) {
+        printf("Echec du chargement des données. Vérifiez les fichiers dans /config.\n");
+        return EXIT_FAILURE;
+    }
 
     bool running = true;
 
@@ -24,6 +30,7 @@ int main() {
         }
     }
 
+    free_game_data();
     printf("\nMerci d'avoir joué à OceanDepth\n");
     return EXIT_SUCCESS;
 }

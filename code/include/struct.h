@@ -3,6 +3,44 @@
 
 #include "include.h"
 
+// ===== ENUMS POUR EFFETS ET COMPÉTENCES =====
+
+typedef enum {
+    EFFET_AUCUN,
+    EFFET_PARALYSIE,
+    EFFET_BRULURE,
+    EFFET_CHARME,
+    EFFET_BOUCLIER
+} EffectType;
+
+typedef enum {
+    SKILL_EFFECT_NONE,
+    SKILL_EFFECT_HEAL_OXYGEN,
+    SKILL_EFFECT_DAMAGE_AOE,
+    SKILL_EFFECT_PACIFY,
+    SKILL_EFFECT_DEBUFF_SPEED
+} SkillEffectType;
+
+// ===== STRUCTURES POUR EFFETS ET COMPÉTENCES =====
+
+typedef struct {
+    EffectType type;
+    int duration;
+    int potency;
+} StatusEffect;
+
+typedef struct {
+    int id;
+    char nom[30];
+    int cost_oxygene;
+    int cost_fatigue;
+    SkillEffectType effect_type;
+    int potency;
+    int cooldown;
+} CompetenceAquatique;
+
+// ===== STRUCTURES DE BASE =====
+
 typedef struct {
     int id;
     char nom[30];
@@ -14,8 +52,14 @@ typedef struct {
     int vitesse;
     int perles_min;
     int perles_max;
-    char effet_special[20]; // "paralysie", "poison", "aucun"
+    char effet_special[20];
+    EffectType special_attack_effect;
+    int special_attack_chance;
+    int special_attack_potency;
+    int special_attack_duration;
     bool est_vivant;
+    StatusEffect active_effects[5];
+    int active_effect_count;
     int zone; // Zone d'apparition de la créature
 } CreatureMarine;
 
@@ -33,6 +77,10 @@ typedef struct {
     int vitesse_minimale;
     int vitesse_maximale;
     char effet_special[20];
+    EffectType effect_type_to_apply;
+    int effect_chance;
+    int effect_potency;
+    int effect_duration;
     int zone; // Zone de disponibilité de l'arme
 } Arme;
 
@@ -67,6 +115,10 @@ typedef struct {
     Arme arme_equipee;
     Equipement combinaison_equipee;
     Consommable inventaire[8];
+    StatusEffect active_effects[5];
+    int active_effect_count;
+    CompetenceAquatique competences_apprises[4];
+    int competences_cooldowns[4];
     // Système de progression
     int niveau;
     int experience;

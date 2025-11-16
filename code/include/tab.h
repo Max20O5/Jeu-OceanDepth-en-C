@@ -1,12 +1,23 @@
+#ifndef TAB_H 
+#define TAB_H
+
 #include "struct.h"
 
-Consommable *tab_consommable;
+extern Consommable *tab_consommable;
+extern Map_section *map;
+extern char **inventaire;
+extern char **combinaison_effet;
 
-Map_section *map;// choix si on décide de faire un tableau simple pour la map et non pas une liste chainée
+extern Arme* g_weapon_database;
+extern int g_weapon_count;
+extern CreatureMarine* g_creature_database;
+extern int g_creature_count;
 
-char **inventaire;
+extern Consommable* g_consommable_database;
+extern int g_consommable_count;
 
-char **combinaison_effet;
+extern CompetenceAquatique* g_skill_database;
+extern int g_skill_count;
 
 typedef struct Node_map {
     Map_section section;
@@ -17,7 +28,9 @@ typedef struct Node_map {
 } Node_map;
 
 typedef struct {
-    Node_map *debut;  // Pointeur vers le premier nœud
-    Node_map *actuel; // Position actuelle du joueur
-    int taille;       // Nombre de sections
-} Map;//map en liste chainée
+    Node_map *debut;
+    Node_map *actuel;
+    int taille;
+} Map;
+
+#endif

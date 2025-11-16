@@ -1,80 +1,45 @@
 #include "game.h"
 #include "joueur.h"
 #include "combat.h"
+#include "creature.h"
 #include "marchand.h"
-#include "map.h"
-#include "save.h"
 #include <stdio.h>
-#include <stdlib.h>
+
+#define MAX_ENEMIES_IN_ENCOUNTER 4
 
 void start_game() {
     Plongeur player = create_player();
-
+ 
     display_player_stats(player);
-    printf("\n==================================================\n");
-    printf("      Bienvenue dans OceanDepth, %s!\n", player.name);
-    printf("==================================================\n\n");
-    printf("Votre mission: Explorer les profondeurs oceaniques,\n");
-    printf("combattre des creatures marines et decouvrir des tresors!\n\n");
-    printf("Appuyez sur Entree pour commencer votre aventure...");
+    printf("La plongée commence...\n");
+    printf("Appuyez sur Entrée pour descendre...");
     while(getchar() != '\n');
 
-    // Initialisation de la carte
-    Carte* carte = init_carte();
-    if (!carte) {
-        printf("Erreur lors de l'initialisation de la carte!\n");
-        return;
-    }
+    CreatureMarine encounter_enemies[MAX_ENEMIES_IN_ENCOUNTER];
+    int enemy_count = 2;
+    
+    encounter_enemies[0] = get_creature_by_id(10);
+    encounter_enemies[1] = get_creature_by_id(20);
 
-    // Lancer la navigation sur la carte
-    naviguer_carte(carte, &player);
+    start_combat(&player, encounter_enemies, enemy_count); 
 
-    // Libérer la mémoire de la carte
-    free_carte(carte);
-
-    printf("\n==================================================\n");
-    printf("      Fin de votre expedition, %s!\n", player.name);
-    printf("==================================================\n");
-    printf("Stats finales:\n");
+    printf("\nDe retour de votre premier combat :\n");
     display_player_stats(player);
-    printf("\nAppuyez sur Entree pour revenir au menu principal...");
+    
+    printf("Vous trouvez une grotte abritant un mystérieux marchand...\n");
+    printf("Appuyez sur Entrée pour entrer...");
+    while(getchar() != '\n');
+    
+    open_shop(&player);
+
+    printf("\nVous quittez la grotte et remontez à la surface.\n");
+    printf("Appuyez sur Entrée pour revenir au menu principal...");
     while(getchar() != '\n');
 }
 
 void load_game() {
-    if (!sauvegarde_existe()) {
-        printf("\n==================================================\n");
-        printf("      Aucune sauvegarde trouvee!                  \n");
-        printf("==================================================\n");
-        printf("\nAppuyez sur Entree pour revenir au menu principal...");
-        while(getchar() != '\n');
-        return;
-    }
-
-    Plongeur player;
-    Carte* carte = NULL;
-
-    if (!charger_partie(&player, &carte)) {
-        printf("\nErreur lors du chargement de la partie!\n");
-        printf("Appuyez sur Entree pour revenir au menu principal...");
-        while(getchar() != '\n');
-        return;
-    }
-
-    printf("\nAppuyez sur Entree pour continuer votre aventure...");
-    while(getchar() != '\n');
-
-    // Lancer la navigation sur la carte
-    naviguer_carte(carte, &player);
-
-    // Libérer la mémoire de la carte
-    free_carte(carte);
-
-    printf("\n==================================================\n");
-    printf("      Fin de votre expedition, %s!\n", player.name);
-    printf("==================================================\n");
-    printf("Stats finales:\n");
-    display_player_stats(player);
-    printf("\nAppuyez sur Entree pour revenir au menu principal...");
-    while(getchar() != '\n');
+    printf("Chargement de la partie\n");
+    printf("Appuyez sur Entrée pour revenir au menu principal");
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }
