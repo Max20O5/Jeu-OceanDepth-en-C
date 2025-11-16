@@ -245,7 +245,7 @@ bool charger_partie(Plongeur* joueur, Carte** carte) {
                    &joueur->combinaison_equipee.consommation_oxygene_reduction,
                    joueur->combinaison_equipee.effet_special) != 8) {
             // Si le chargement échoue, utiliser l'équipement par défaut
-            joueur->combinaison_equipee = creer_neoprene_basic();
+            joueur->combinaison_equipee = get_equipement_by_id(1);
         }
     }
 

@@ -60,7 +60,7 @@ Plongeur create_player(void) {
     new_player.perles = 0;
     new_player.active_effect_count = 0;
     new_player.arme_equipee = get_weapon_by_id(3);
-    new_player.combinaison_equipee = creer_neoprene_basic();
+    new_player.combinaison_equipee = get_equipement_by_id(1);
 
     for (int i = 0; i < 8; i++) {
         new_player.inventaire[i] = get_consommable_by_id(0); 
