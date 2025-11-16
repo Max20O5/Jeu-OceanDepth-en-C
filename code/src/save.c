@@ -108,6 +108,15 @@ bool sauvegarder_partie(Plongeur* joueur, Carte* carte) {
     }
     fprintf(file, "INVENTAIRE_END\n");
 
+    // Compétences apprises et cooldowns
+    fprintf(file, "COMPETENCES_START\n");
+    for (int i = 0; i < 4; i++) {
+        fprintf(file, "%d:%d\n",
+                joueur->competences_apprises[i].id,
+                joueur->competences_cooldowns[i]);
+    }
+    fprintf(file, "COMPETENCES_END\n");
+
     // Position sur la carte (zone, x, y, profondeur)
     int profondeur_actuelle = get_profondeur_actuelle(carte);
     fprintf(file, "POSITION:%d:%d:%d:%d\n",
@@ -261,6 +270,31 @@ bool charger_partie(Plongeur* joueur, Carte** carte) {
             }
             // Lire INVENTAIRE_END
             fgets(buffer, sizeof(buffer), file);
+        }
+    }
+
+    // Charger les compétences
+    if (fgets(buffer, sizeof(buffer), file)) {
+        if (strncmp(buffer, "COMPETENCES_START", 17) == 0) {
+            for (int i = 0; i < 4; i++) {
+                if (fgets(buffer, sizeof(buffer), file)) {
+                    int skill_id, cooldown;
+                    if (sscanf(buffer, "%d:%d", &skill_id, &cooldown) == 2) {
+                        joueur->competences_apprises[i] = get_skill_by_id(skill_id);
+                        joueur->competences_cooldowns[i] = cooldown;
+                    }
+                }
+            }
+            // Lire COMPETENCES_END
+            fgets(buffer, sizeof(buffer), file);
+        } else {
+            // Ancien format de sauvegarde sans compétences - initialiser par défaut
+            for (int i = 0; i < 4; i++) {
+                joueur->competences_apprises[i] = get_skill_by_id(0);
+                joueur->competences_cooldowns[i] = 0;
+            }
+            joueur->competences_apprises[0] = get_skill_by_id(1);
+            joueur->competences_apprises[1] = get_skill_by_id(2);
         }
     }
 

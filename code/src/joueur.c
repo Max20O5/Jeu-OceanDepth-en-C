@@ -68,12 +68,16 @@ Plongeur create_player(void) {
     new_player.inventaire[0] = get_consommable_by_id(1);
     new_player.inventaire[1] = get_consommable_by_id(1);
     new_player.inventaire[2] = get_consommable_by_id(2);
-    new_player.competences_apprises[0] = get_skill_by_id(1);
-    new_player.competences_apprises[1] = get_skill_by_id(2);
-    
+
+    // Initialiser toutes les compétences à vide (id 0)
     for (int i = 0; i < 4; i++) {
+        new_player.competences_apprises[i] = get_skill_by_id(0);
         new_player.competences_cooldowns[i] = 0;
     }
+
+    // Apprendre les compétences de départ
+    new_player.competences_apprises[0] = get_skill_by_id(1);
+    new_player.competences_apprises[1] = get_skill_by_id(2);
 
     printf("\nLe plongeur '%s' a été crée!\n", new_player.name);
     printf("Arme équipée: %s\n", new_player.arme_equipee.nom);
