@@ -46,6 +46,9 @@ Plongeur create_player(void) {
 
     strcpy(new_player.name, name_buffer);
 
+    new_player.niveau = 1;
+    new_player.experience = 0;
+    new_player.experience_prochain_niveau = 100;
     new_player.points_de_vie_max = 100;
     new_player.points_de_vie = 100;
     new_player.niveau_oxygene_max = 100;

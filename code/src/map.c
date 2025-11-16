@@ -102,8 +102,8 @@ void generer_tuile(Tile* tile, int x __attribute__((unused)), int y, int zone_nu
         // Allouer et générer les IDs des ennemis
         tile->enemy_ids = malloc(sizeof(int) * tile->nb_ennemis);
         for (int i = 0; i < tile->nb_ennemis; i++) {
-            // IDs d'ennemis (1-5 pour les créatures de base, à adapter selon votre système)
-            tile->enemy_ids[i] = randomNumber(1, 5);
+            // IDs des créatures: 10, 20, 30, 40, 50 (selon creatures.cfg)
+            tile->enemy_ids[i] = randomNumber(1, 5) * 10;
         }
         return;
     }
