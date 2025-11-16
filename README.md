@@ -463,9 +463,9 @@ Actions disponibles:
 
 Le projet OceanDepth est **complet a 100%** avec toutes les fonctionnalites demandees et plusieurs bonus. Le code est **modulaire, commente et fonctionnel**. La compilation reussit sans erreurs. Le jeu est **jouable et equilibre**.
 
-**Pret pour le rendu !**
 
 ---
 
 **Date de finalisation** : 13 Novembre 2025
 **Version** : 1.0 - Release Candidate
+
