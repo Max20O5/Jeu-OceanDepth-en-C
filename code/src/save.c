@@ -4,6 +4,7 @@
 #include "consommable.h"
 #include "equipement.h"
 #include "competence.h"
+#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -323,6 +324,15 @@ bool charger_partie(Plongeur* joueur, Carte** carte) {
                         tile->type = (TileType)tile_type;
                         tile->visited = (visited == 1);
                         tile->cleared = (cleared == 1);
+
+                        // Régénérer les ennemis pour les tuiles de combat non-cleared
+                        if (tile->type == TILE_COMBAT && !tile->cleared) {
+                            tile->nb_ennemis = randomNumber(1, 3);
+                            tile->enemy_ids = malloc(sizeof(int) * tile->nb_ennemis);
+                            for (int i = 0; i < tile->nb_ennemis; i++) {
+                                tile->enemy_ids[i] = randomNumber(1, 5) * 10;
+                            }
+                        }
                     }
                 }
             }

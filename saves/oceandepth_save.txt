@@ -3,7 +3,7 @@ JOUEUR_NOM:mae
 JOUEUR_STATS:100:100:100:100:0:0
 JOUEUR_PROGRESSION:1:0:100:0:0
 ARME:3:Hache de Feu:10:15:4:0:0:0:0:0:0:0:Brulure_Faible
-COMBINAISON:0::8:584181393:32762:0:0:H`
+COMBINAISON:1:Neoprene Basic:5:5:0:0:0:aucun
 INVENTAIRE_START
 1:Trousse de Soin:soin:25:0:0
 1:Trousse de Soin:soin:25:0:0
