@@ -3,6 +3,7 @@
 #include "weapon.h"
 #include "consommable.h"
 #include "equipement.h"
+#include "competence.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -233,7 +234,8 @@ bool charger_partie(Plongeur* joueur, Carte** carte) {
                    &joueur->combinaison_equipee.vitesse_maximale,
                    &joueur->combinaison_equipee.consommation_oxygene_reduction,
                    joueur->combinaison_equipee.effet_special) != 8) {
-            success = false;
+            // Si le chargement échoue, utiliser l'équipement par défaut
+            joueur->combinaison_equipee = creer_neoprene_basic();
         }
     }
 
