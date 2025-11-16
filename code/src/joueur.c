@@ -49,6 +49,8 @@ Plongeur create_player(void) {
     new_player.niveau = 1;
     new_player.experience = 0;
     new_player.experience_prochain_niveau = 100;
+    new_player.creatures_tuees = 0;
+    new_player.boss_tues = 0;
     new_player.points_de_vie_max = 100;
     new_player.points_de_vie = 100;
     new_player.niveau_oxygene_max = 100;

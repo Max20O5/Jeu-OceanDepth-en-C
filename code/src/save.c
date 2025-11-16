@@ -192,6 +192,13 @@ bool charger_partie(Plongeur* joueur, Carte** carte) {
             joueur->experience_prochain_niveau = 100;
             joueur->creatures_tuees = 0;
             joueur->boss_tues = 0;
+        } else {
+            // Valider les valeurs chargées et corriger si invalides
+            if (joueur->niveau < 1) joueur->niveau = 1;
+            if (joueur->experience < 0) joueur->experience = 0;
+            if (joueur->experience_prochain_niveau < 1) joueur->experience_prochain_niveau = 100;
+            if (joueur->creatures_tuees < 0) joueur->creatures_tuees = 0;
+            if (joueur->boss_tues < 0) joueur->boss_tues = 0;
         }
     }
 
