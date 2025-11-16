@@ -4,8 +4,8 @@ OceanDepth est un jeu d'aventure textuel en C où l'on incarne un plongeur explo
 
 Ce projet met en œuvre un moteur de jeu entièrement "data-driven" : toutes les entités (créatures, armes, compétences, consommables) et la configuration de la carte sont chargées depuis des fichiers de configuration externes.
 
-# 🚀 Lancer le projet
-## Prérequis
+## 🚀 Lancer le projet
+### Prérequis
 Un compilateur C (comme gcc)
 
 L'utilitaire Make
@@ -28,7 +28,7 @@ make
 make clean
 ```
 
-# 💾 Liste des fonctionnalités
+## 💾 Liste des fonctionnalités
 
 Ce projet implémente les fonctionnalités suivantes :
 
@@ -265,5 +265,6 @@ OceanDepth/
 └───saves/
         oceandepth_save.txt
 ```
+
 
 
