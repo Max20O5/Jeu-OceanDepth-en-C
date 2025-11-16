@@ -585,9 +585,6 @@ void start_combat_profondeur(Plongeur* player, int profondeur) {
 // Combat avec créatures déjà générées - version qui retourne bool
 // Retourne true si victoire, false si défaite
 bool combat(Plongeur* player, CreatureMarine* creatures, int nb_creatures, int profondeur) {
-    // Sauvegarder les PV initiaux pour détecter la défaite
-    int initial_hp = player->points_de_vie;
-
     printf("\n");
     printf("╔═══════════════════════════════════════════════════════════╗\n");
     printf("║          ⚔️  COMBAT SOUS-MARIN! ⚔️                       ║\n");

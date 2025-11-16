@@ -5,6 +5,7 @@
 #include "marchand.h"
 #include "joueur.h"
 #include "creature.h"
+#include "save.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,6 +23,7 @@ const char* get_tile_icon(TileType type) {
         case TILE_TREASURE: return "💰";     // Trésor
         case TILE_MERCHANT: return "🎒";     // Marchand
         case TILE_BOSS:     return "💀";     // Boss
+        case TILE_SAVE:     return "🕳️ ";     // Grotte (sauvegarde)
         case TILE_PLAYER:   return "🌊";     // Joueur (plongeur)
         default:            return "??";
     }
@@ -74,7 +76,7 @@ void free_carte(Carte* carte) {
 // ===== GÉNÉRATION DE MAP =====
 
 // Générer une tuile selon les probabilités de la config
-void generer_tuile(Tile* tile, int x, int y, int zone_number, MapConfig* config) {
+void generer_tuile(Tile* tile, int x __attribute__((unused)), int y, int zone_number, MapConfig* config) {
     tile->visited = false;
     tile->cleared = false;
     tile->nb_ennemis = 0;
@@ -125,6 +127,12 @@ void generer_tuile(Tile* tile, int x, int y, int zone_number, MapConfig* config)
         tile->enemy_ids = malloc(sizeof(int));
         // Boss ID (6 pour boss normal, à adapter)
         tile->enemy_ids[0] = 6;
+        return;
+    }
+
+    cumulative += config->save_tile_probability;
+    if (rand <= cumulative) {
+        tile->type = TILE_SAVE;
         return;
     }
 
@@ -244,7 +252,8 @@ void afficher_carte(Carte* carte) {
            zone->player_x, zone->player_y);
     printf("║\n");
     printf("╠════════════════════════════════════════════════════════════════╣\n");
-    printf("║ Légende: 🌊=Vous | ⚔️=Combat | 💰=Trésor | 🎒=Marchand | 💀=Boss ║\n");
+    printf("║ Légende: 🌊=Vous | ⚔️=Combat | 💰=Trésor | 🎒=Marchand          ║\n");
+    printf("║          💀=Boss | 🕳️=Grotte (Sauvegarde)                     ║\n");
     printf("║          ❓=Inexploré | ✓=Complété                            ║\n");
     printf("╚════════════════════════════════════════════════════════════════╝\n\n");
 }
@@ -383,6 +392,15 @@ void explorer_tuile(Carte* carte, Plongeur* joueur) {
                 printf("   Vous récupérez %d points d'oxygène. (O2: %d/%d)\n",
                        o2_gain, joueur->niveau_oxygene, joueur->niveau_oxygene_max);
             }
+
+            // Proposer de sauvegarder (zone sûre)
+            printf("\n   💾 Voulez-vous sauvegarder votre partie? (o/n): ");
+            char choix_save_empty[10];
+            read_line(choix_save_empty, sizeof(choix_save_empty));
+            if (choix_save_empty[0] == 'o' || choix_save_empty[0] == 'O') {
+                sauvegarder_partie(joueur, carte);
+            }
+
             tile->cleared = true;
             break;
 
@@ -433,12 +451,29 @@ void explorer_tuile(Carte* carte, Plongeur* joueur) {
                 printf("   📦 Le coffre est vide...\n");
             }
 
+            // Proposer de sauvegarder (zone sûre)
+            printf("\n   💾 Voulez-vous sauvegarder votre partie? (o/n): ");
+            char choix_save_treasure[10];
+            read_line(choix_save_treasure, sizeof(choix_save_treasure));
+            if (choix_save_treasure[0] == 'o' || choix_save_treasure[0] == 'O') {
+                sauvegarder_partie(joueur, carte);
+            }
+
             tile->cleared = true;
             break;
 
         case TILE_MERCHANT:
             printf("\n🎒 MARCHAND - Un marchand ambulant vous propose ses services!\n");
             open_shop(joueur);
+
+            // Proposer de sauvegarder (zone sûre)
+            printf("\n   💾 Voulez-vous sauvegarder votre partie? (o/n): ");
+            char choix_save_merchant[10];
+            read_line(choix_save_merchant, sizeof(choix_save_merchant));
+            if (choix_save_merchant[0] == 'o' || choix_save_merchant[0] == 'O') {
+                sauvegarder_partie(joueur, carte);
+            }
+
             tile->cleared = true;
             break;
 
@@ -493,6 +528,39 @@ void explorer_tuile(Carte* carte, Plongeur* joueur) {
                     passer_zone_suivante(carte);
                 }
             }
+            break;
+
+        case TILE_SAVE:
+            printf("\n🕳️  GROTTE SÉCURISÉE - Un endroit sûr pour se reposer et sauvegarder!\n");
+            printf("   Cette grotte est protégée des créatures marines.\n\n");
+
+            // Récupération d'oxygène importante
+            int o2_recovery = 50;
+            joueur->niveau_oxygene += o2_recovery;
+            if (joueur->niveau_oxygene > joueur->niveau_oxygene_max) {
+                joueur->niveau_oxygene = joueur->niveau_oxygene_max;
+            }
+            printf("   💎 Vous récupérez %d points d'oxygène! (O2: %d/%d)\n",
+                   o2_recovery, joueur->niveau_oxygene, joueur->niveau_oxygene_max);
+
+            // Récupération de fatigue
+            if (joueur->niveau_fatigue > 0) {
+                joueur->niveau_fatigue = 0;
+                printf("   ✨ Votre fatigue disparaît complètement!\n");
+            }
+
+            // Proposer de sauvegarder
+            printf("\n   Voulez-vous sauvegarder votre partie? (o/n): ");
+            char choix_save[10];
+            read_line(choix_save, sizeof(choix_save));
+
+            if (choix_save[0] == 'o' || choix_save[0] == 'O') {
+                sauvegarder_partie(joueur, carte);
+            } else {
+                printf("   Partie non sauvegardée.\n");
+            }
+
+            tile->cleared = true;
             break;
 
         default:

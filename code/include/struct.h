@@ -115,6 +115,7 @@ typedef enum {
     TILE_TREASURE,       // Tuile de tresor (oxygene/item/rien)
     TILE_MERCHANT,       // Tuile de marchand
     TILE_BOSS,           // Tuile de boss
+    TILE_SAVE,           // Tuile de sauvegarde (grotte sécurisée)
     TILE_PLAYER          // Position actuelle du joueur (pour affichage)
 } TileType;
 
@@ -150,6 +151,7 @@ typedef struct {
     int treasure_tile_probability;
     int merchant_tile_probability;
     int boss_tile_probability;
+    int save_tile_probability;    // Probabilité de tuile de sauvegarde
     int enemy_count_min;
     int enemy_count_max;
     int depth_increment_min;

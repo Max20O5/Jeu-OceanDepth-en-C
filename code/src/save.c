@@ -114,6 +114,24 @@ bool sauvegarder_partie(Plongeur* joueur, Carte* carte) {
             carte->current_zone->player_y,
             profondeur_actuelle);
 
+    // État de la map (tuiles visitées et complétées)
+    fprintf(file, "MAP_STATE_START\n");
+    fprintf(file, "ZONE:%d\n", carte->current_zone->zone_number);
+    fprintf(file, "BOSS_DEFEATED:%d\n", carte->current_zone->boss_defeated ? 1 : 0);
+
+    // Sauvegarder l'état de chaque tuile
+    for (int y = 0; y < carte->current_zone->height; y++) {
+        for (int x = 0; x < carte->current_zone->width; x++) {
+            Tile* tile = &carte->current_zone->tiles[y][x];
+            fprintf(file, "TILE:%d:%d:%d:%d:%d\n",
+                    x, y,
+                    (int)tile->type,
+                    tile->visited ? 1 : 0,
+                    tile->cleared ? 1 : 0);
+        }
+    }
+    fprintf(file, "MAP_STATE_END\n");
+
     fclose(file);
     printf("\n==============================================================\n");
     printf("           PARTIE SAUVEGARDEE AVEC SUCCES!                    \n");
@@ -266,8 +284,41 @@ bool charger_partie(Plongeur* joueur, Carte** carte) {
     (*carte)->current_zone->player_x = player_x;
     (*carte)->current_zone->player_y = player_y;
 
-    // Note: Pour simplifier, on commence toujours en zone 1
-    // On pourrait générer les zones jusqu'à zone_num si nécessaire
+    // Charger l'état de la map (tuiles visitées et complétées)
+    if (fgets(buffer, sizeof(buffer), file)) {
+        if (strncmp(buffer, "MAP_STATE_START", 15) == 0) {
+            // Lire le numéro de zone
+            int saved_zone = 1;
+            int boss_defeated = 0;
+            if (fgets(buffer, sizeof(buffer), file)) {
+                sscanf(buffer, "ZONE:%d", &saved_zone);
+            }
+            if (fgets(buffer, sizeof(buffer), file)) {
+                sscanf(buffer, "BOSS_DEFEATED:%d", &boss_defeated);
+            }
+            (*carte)->current_zone->boss_defeated = (boss_defeated == 1);
+
+            // Lire l'état de chaque tuile
+            while (fgets(buffer, sizeof(buffer), file)) {
+                if (strncmp(buffer, "MAP_STATE_END", 13) == 0) {
+                    break;
+                }
+
+                int tile_x, tile_y, tile_type, visited, cleared;
+                if (sscanf(buffer, "TILE:%d:%d:%d:%d:%d",
+                          &tile_x, &tile_y, &tile_type, &visited, &cleared) == 5) {
+                    // Vérifier que les coordonnées sont valides
+                    if (tile_x >= 0 && tile_x < (*carte)->current_zone->width &&
+                        tile_y >= 0 && tile_y < (*carte)->current_zone->height) {
+                        Tile* tile = &(*carte)->current_zone->tiles[tile_y][tile_x];
+                        tile->type = (TileType)tile_type;
+                        tile->visited = (visited == 1);
+                        tile->cleared = (cleared == 1);
+                    }
+                }
+            }
+        }
+    }
 
     fclose(file);
 

@@ -53,6 +53,8 @@ void parse_config_line(char* line, MapConfig* config) {
         config->merchant_tile_probability = atoi(value);
     } else if (strcmp(key, "BOSS_TILE_PROBABILITY") == 0) {
         config->boss_tile_probability = atoi(value);
+    } else if (strcmp(key, "SAVE_TILE_PROBABILITY") == 0) {
+        config->save_tile_probability = atoi(value);
     } else if (strcmp(key, "ENEMY_COUNT_MIN") == 0) {
         config->enemy_count_min = atoi(value);
     } else if (strcmp(key, "ENEMY_COUNT_MAX") == 0) {
@@ -100,6 +102,7 @@ bool load_map_config(MapConfig* config) {
         config->treasure_tile_probability = 25;
         config->merchant_tile_probability = 5;
         config->boss_tile_probability = 8;
+        config->save_tile_probability = 10;  // 10% de chance de point de sauvegarde
         config->enemy_count_min = 1;
         config->enemy_count_max = 3;
         config->depth_increment_min = 0;
@@ -142,6 +145,7 @@ void print_map_config(MapConfig* config) {
     printf("  - Trésor: %d%%\n", config->treasure_tile_probability);
     printf("  - Marchand: %d%%\n", config->merchant_tile_probability);
     printf("  - Boss: %d%%\n", config->boss_tile_probability);
+    printf("  - Sauvegarde: %d%%\n", config->save_tile_probability);
     printf("Ennemis par combat: %d - %d\n", config->enemy_count_min, config->enemy_count_max);
     printf("Incrément de profondeur: %d - %d m\n", config->depth_increment_min, config->depth_increment_max);
     printf("Zones définies: %d\n", config->zone_count);
