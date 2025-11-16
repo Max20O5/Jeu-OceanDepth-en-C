@@ -69,15 +69,7 @@ Plongeur create_player(void) {
     new_player.inventaire[1] = get_consommable_by_id(1);
     new_player.inventaire[2] = get_consommable_by_id(2);
 
-<<<<<<< HEAD
-    new_player.competences_apprises[0] = get_skill_by_id(1);
-    new_player.competences_apprises[1] = get_skill_by_id(2);
-    new_player.competences_apprises[2] = get_skill_by_id(0); 
-    new_player.competences_apprises[3] = get_skill_by_id(0);
-    
-=======
     // Initialiser toutes les compétences à vide (id 0)
->>>>>>> mon-travail
     for (int i = 0; i < 4; i++) {
         new_player.competences_apprises[i] = get_skill_by_id(0);
         new_player.competences_cooldowns[i] = 0;

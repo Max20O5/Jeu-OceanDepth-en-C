@@ -336,18 +336,6 @@ void start_combat(Plongeur* player, CreatureMarine* enemies, int enemy_count) {
         }
 
         // --- TOUR DES ENNEMIS ---
-<<<<<<< HEAD
-        if (player_turn_over) {
-            handle_enemies_turn(player, enemies, enemy_count);
-            if (player->points_de_vie <= 0) {
-                printf("\nVous sombrez dans les limbes pour l'éternité...\n");
-                break;
-            }
-            
-            reduce_all_skill_cooldowns(player);
-        }
-
-=======
         handle_enemies_turn(player, enemies, enemy_count);
         if (player->points_de_vie <= 0) {
             printf("\nVous sombrez dans les limbes pour l'éternité...\n");
@@ -362,7 +350,6 @@ void start_combat(Plongeur* player, CreatureMarine* enemies, int enemy_count) {
 
         reduce_all_skill_cooldowns(player);
 
->>>>>>> mon-travail
         if (player->points_de_vie > 0) {
             wait_for_enter();
         }
