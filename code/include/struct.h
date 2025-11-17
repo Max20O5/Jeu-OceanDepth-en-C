@@ -222,6 +222,7 @@ typedef struct {
 
 // Structure principale de la carte (remplace l'ancien système)
 typedef struct {
+    Zone* first_zone;             // Première zone (tête de liste chaînée)
     Zone* current_zone;           // Zone actuelle
     MapConfig config;             // Configuration chargée depuis le fichier
     int total_zones_generated;   // Nombre total de zones générées
