@@ -355,6 +355,14 @@ bool charger_partie(Plongeur* joueur, Carte** carte) {
                     if (tile_x >= 0 && tile_x < (*carte)->current_zone->width &&
                         tile_y >= 0 && tile_y < (*carte)->current_zone->height) {
                         Tile* tile = &(*carte)->current_zone->tiles[tile_y][tile_x];
+                        
+                        // Free existing enemy_ids before overwriting the tile
+                        if (tile->enemy_ids) {
+                            free(tile->enemy_ids);
+                            tile->enemy_ids = NULL;
+                            tile->nb_ennemis = 0;
+                        }
+                        
                         tile->type = (TileType)tile_type;
                         tile->visited = (visited == 1);
                         tile->cleared = (cleared == 1);
