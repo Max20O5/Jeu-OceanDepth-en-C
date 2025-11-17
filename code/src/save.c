@@ -161,6 +161,9 @@ bool charger_partie(Plongeur* joueur, Carte** carte) {
     char buffer[256];
     bool success = true;
 
+    // Initialiser les compteurs d'effets à 0 (au cas où ils ne seraient pas sauvegardés)
+    joueur->active_effect_count = 0;
+
     // Vérifier l'en-tête
     if (fgets(buffer, sizeof(buffer), file) == NULL ||
         strncmp(buffer, "OCEANDEPTHS_SAVE_V1", 19) != 0) {
