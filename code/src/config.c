@@ -90,42 +90,42 @@ void parse_config_line(char* line, MapConfig* config) {
 
 // Charge la configuration depuis le fichier
 bool load_map_config(MapConfig* config) {
+    // Toujours initialiser avec des valeurs par défaut
+    config->map_width = 10;
+    config->map_height = 8;
+    config->combat_tile_probability = 35;
+    config->treasure_tile_probability = 25;
+    config->merchant_tile_probability = 5;
+    config->boss_tile_probability = 8;
+    config->save_tile_probability = 10; // 10% de chance de point de sauvegarde
+    config->enemy_count_min = 1;
+    config->enemy_count_max = 3;
+    config->depth_increment_min = 0;
+    config->depth_increment_max = 15;
+    config->zone_difficulty_multiplier = 1.2f;
+    config->zone_enemy_bonus = 0.5f;
+    config->zone_rare_loot_base = 5;
+    config->zone_rare_loot_increase = 3;
+    config->zone_base_depth = 0;
+    config->zone_depth_increment = 100;
+    
+    // Noms de zones par défaut
+    config->zone_count = 6;
+    strcpy(config->zone_names[0], "Zone 1: Plage de sable");
+    strcpy(config->zone_names[1], "Zone 2: Récif corallien");
+    strcpy(config->zone_names[2], "Zone 3: Grotte sous-marine");
+    strcpy(config->zone_names[3], "Zone 4: Canyon abyssal");
+    strcpy(config->zone_names[4], "Zone 5: Fosse océanique");
+    strcpy(config->zone_names[5], "Zone 6: Abîme sans fin");
+
     FILE* file = fopen("config/config.cfg", "r");
     if (!file) {
         printf("ERREUR: Impossible d'ouvrir le fichier config/config.cfg!\n");
         printf("Utilisation des valeurs par défaut...\n");
-
-        // Valeurs par défaut
-        config->map_width = 10;
-        config->map_height = 8;
-        config->combat_tile_probability = 35;
-        config->treasure_tile_probability = 25;
-        config->merchant_tile_probability = 5;
-        config->boss_tile_probability = 8;
-        config->save_tile_probability = 10;  // 10% de chance de point de sauvegarde
-        config->enemy_count_min = 1;
-        config->enemy_count_max = 3;
-        config->depth_increment_min = 0;
-        config->depth_increment_max = 15;
-        config->zone_difficulty_multiplier = 1.2f;
-        config->zone_enemy_bonus = 0.5f;
-        config->zone_rare_loot_base = 5;
-        config->zone_rare_loot_increase = 3;
-        config->zone_base_depth = 0;
-        config->zone_depth_increment = 100;
-
-        // Noms de zones par défaut
-        config->zone_count = 6;
-        strcpy(config->zone_names[0], "Zone 1: Plage de sable");
-        strcpy(config->zone_names[1], "Zone 2: Récif corallien");
-        strcpy(config->zone_names[2], "Zone 3: Grotte sous-marine");
-        strcpy(config->zone_names[3], "Zone 4: Canyon abyssal");
-        strcpy(config->zone_names[4], "Zone 5: Fosse océanique");
-        strcpy(config->zone_names[5], "Zone 6: Abîme sans fin");
-
         return false;
     }
 
+    // Lire le fichier et écraser les valeurs par défaut
     char line[512];
     while (fgets(line, sizeof(line), file)) {
         parse_config_line(line, config);

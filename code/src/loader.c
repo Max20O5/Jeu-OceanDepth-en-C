@@ -54,6 +54,10 @@ bool load_weapons(const char* filename) {
         if (!parse_line(buffer)) continue;
 
         Arme* w = &g_weapon_database[weapon_idx];
+        
+        // Initialiser tous les champs à 0 d'abord
+        memset(w, 0, sizeof(Arme));
+        
         sscanf(buffer, "WEAPON;%d;%[^;];%d;%d;%d;%[^\n]",
                &w->id, w->nom, &w->attaque_minimale, &w->attaque_maximale,
                &w->consommation_oxygene, w->effet_special);
@@ -208,6 +212,10 @@ bool load_equipements(const char* filename) {
         if (!parse_line(buffer)) continue;
 
         Equipement* e = &g_equipement_database[equip_idx];
+        
+        // Initialiser tous les champs à 0 d'abord
+        memset(e, 0, sizeof(Equipement));
+        
         // Format: EQUIPEMENT;id;nom;def_min;def_max;oxy_reduc;effet_special
         int result = sscanf(buffer, "EQUIPEMENT;%d;%[^;];%d;%d;%d;%[^\n]",
                &e->id,

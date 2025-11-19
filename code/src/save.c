@@ -161,6 +161,9 @@ bool charger_partie(Plongeur* joueur, Carte** carte) {
     char buffer[256];
     bool success = true;
 
+    // Initialiser les compteurs d'effets à 0 (au cas où ils ne seraient pas sauvegardés)
+    joueur->active_effect_count = 0;
+
     // Vérifier l'en-tête
     if (fgets(buffer, sizeof(buffer), file) == NULL ||
         strncmp(buffer, "OCEANDEPTHS_SAVE_V1", 19) != 0) {
@@ -355,6 +358,14 @@ bool charger_partie(Plongeur* joueur, Carte** carte) {
                     if (tile_x >= 0 && tile_x < (*carte)->current_zone->width &&
                         tile_y >= 0 && tile_y < (*carte)->current_zone->height) {
                         Tile* tile = &(*carte)->current_zone->tiles[tile_y][tile_x];
+                        
+                        // Free existing enemy_ids before overwriting the tile
+                        if (tile->enemy_ids) {
+                            free(tile->enemy_ids);
+                            tile->enemy_ids = NULL;
+                            tile->nb_ennemis = 0;
+                        }
+                        
                         tile->type = (TileType)tile_type;
                         tile->visited = (visited == 1);
                         tile->cleared = (cleared == 1);

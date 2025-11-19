@@ -61,15 +61,12 @@ void free_zone(Zone* zone) {
 // Libérer la carte
 void free_carte(Carte* carte) {
     if (!carte) return;
-    if (carte->current_zone) {
-        // Trouver la première zone pour libérer toute la chaîne
-        Zone* first = carte->current_zone;
-        while (first->zone_number > 1) {
-            // On ne peut pas remonter, donc on libère juste depuis la zone actuelle
-            break;
-        }
-        free_zone(first);
+    
+    // Libérer toute la chaîne de zones depuis la première zone
+    if (carte->first_zone) {
+        free_zone(carte->first_zone);
     }
+    
     free(carte);
 }
 
@@ -196,10 +193,12 @@ Carte* init_carte() {
     load_map_config(&carte->config);
 
     // Générer la première zone
-    carte->current_zone = generer_zone(1, &carte->config);
+    Zone* zone1 = generer_zone(1, &carte->config);
+    carte->first_zone = zone1;
+    carte->current_zone = zone1;
     carte->total_zones_generated = 1;
 
-    if (!carte->current_zone) {
+    if (!carte->first_zone) {
         free(carte);
         return NULL;
     }
